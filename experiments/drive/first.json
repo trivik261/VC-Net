@@ -1,0 +1,23 @@
+{
+  "result_dir" : "qwe_hrnet",
+  "expeerment_name" : "Hrnet",
+  "fun_main" : "main",
+
+  "channels" : 3,
+  "num_class" : 4,
+  "batchsize" : 2,
+
+  "lr" : 0.0001,
+  "max_epoch" : 4000,
+  "frequency_show" : 50,
+
+
+  "finetune" : "False",
+  "pkl_path" : "/data/wanghua/first/qwe_hrnet/Hrnet19/net_params_best.pkl",
+
+  "train_data_path" : ["./data/DRIVE/training/image"],
+  "test_data_path" : ["./data/DRIVE/test/image"],
+  "data_size" : 20,
+
+  "backbone_channels" : [[3, 64], [64, 128], [128, 256], [256, 512], [512, 1024]]
+}
