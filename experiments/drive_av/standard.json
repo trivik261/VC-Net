@@ -8,17 +8,21 @@
   "channels" : 3,
   "num_class" : 4,
   "batchsize" : 2,
+  "patch_size" : 512,
+  "patch_stride" : 512,
 
-  "lr" : 0.0001,
+  "lr" : 0.00005,
   "max_epoch" : 4000,
-  "frequency_show" : 50,
+  "frequency_show" : 10,
+  "gpu" : 3,
 
 
+  "if_train" : "False",
   "finetune" : "True",
-  "pkl_path" : "/storage/wanghua/pc_node4/vessel_av/Results_DRIVE_AV/U-Net198/net_params_best.pkl",
+  "pkl_path" : "./results/DRIVE_AV/vc_net/net_params_best.pkl",
 
   "train_data_path" : ["./data/DRIVE_AV/training/images/"],
   "test_data_path" : ["./data/DRIVE_AV/test/images/"],
-  "data_size" : 20
-
+  "data_size" : 20,
+  "v_a" : [2, 3]
 }

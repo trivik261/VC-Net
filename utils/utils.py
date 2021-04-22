@@ -78,7 +78,7 @@ def print_writer_scalars(writer, dict_message_train, dict_message_test, step):
                             'test_%s'%key:dict_message_test[key]}, step)
 
 
-def make_log(current_dir, result_dir, dataset_name, experment_name, fun):
+def make_log(current_dir, result_dir, dataset_name, experment_name, fun, cfg_path):
     EXPR_ID: int = start_expr(experment_name, '', '', '')
     print('EXPR_ID', EXPR_ID)
     log_dir = os.path.join(current_dir, result_dir, dataset_name, experment_name + '%s' % EXPR_ID)
@@ -88,6 +88,8 @@ def make_log(current_dir, result_dir, dataset_name, experment_name, fun):
 
     # shutil.copytree(_join(current_dir, 'model'), _join(log_dir, 'model'))
     shutil.copy(_join(current_dir, '%s.py' % fun), _join(log_dir, '%s.py' % fun))
+    basename = os.path.basename(cfg_path)
+    shutil.copy(cfg_path, _join(log_dir, basename))
 
     logging.basicConfig(level=logging.INFO,
                         filename=_join(log_dir, 'new.log'),

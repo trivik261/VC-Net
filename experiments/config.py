@@ -30,7 +30,6 @@ def process_config(json_file):
     cfg, _ = get_config_from_json(json_file)
 
     cfg.finetune = eval(cfg.finetune)
-    # cfg.train_data_path = Path(cfg.train_data_path)
-    # cfg.test_data_path = Path(cfg.test_data_path)
+    cfg.if_train = eval(cfg.if_train)
 
     return cfg

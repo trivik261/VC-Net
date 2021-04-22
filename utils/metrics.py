@@ -5,46 +5,42 @@ import torch
 def metrics_test_drive_dice(predict_av, target_av, mask,  contain_classes):
     # 统计预测信息
     # F1A,F1V
-    accuracy = []
     dice = []
-    for i in contain_classes:
-        t = target_av==i
-        p = predict_av==i
-        t = t[mask == 1]
-        p = p[mask == 1]
-        total = t.sum().numpy()
-        correct = p[t == 1].squeeze().sum().numpy()
-        accuracy.append(correct / total)
-        in_aero = correct
-        dice.append(in_aero*2  / (total + p.sum().numpy()))
+    predict_av = predict_av[mask == 1].numpy()
+    target_av = target_av[mask == 1].numpy()
+    TP_AV = ((predict_av == contain_classes[1]) & (target_av == contain_classes[1])).sum()
+    TN_AV = ((predict_av == contain_classes[0]) & (target_av == contain_classes[0])).sum()
+    v_all = (predict_av == contain_classes[0]).sum() + (target_av == contain_classes[0]).sum()
+    a_all = (predict_av == contain_classes[1]).sum() + (target_av == contain_classes[1]).sum()
+    FA = TP_AV * 2 / a_all
+    FV = TN_AV * 2 / v_all
+    dice.append(FA)
+    dice.append(FV)
     return dice
 
-def metrics_test_drive_all(predict_av, target_av, predict_v, target_v, mask, contain_classes):
+def metrics_test_drive_all(predict_av, target_av, predict_v, target_v, mask, contain_classes,smooth = 1e-5):
     # 统计预测信息
-    # F1A,F1V
-    accuracy = []
-    dice = []
-    for i in contain_classes:
-        t = target_av==i
-        p = predict_av==i
-        t = t[mask==1]
-        p = p[mask==1]
-        total = t.sum().numpy()
-        correct = p[t == 1].squeeze().sum().numpy()
-        accuracy.append(correct / total)
-        in_aero = correct
-        dice.append(in_aero*2  / (total + p.sum().numpy()))
     #SEAV, SPAV, BACC
     predict_av = predict_av[mask == 1].numpy()
     target_av = target_av[mask == 1].numpy()
-    TP_AV = ((predict_av == 3) & (target_av == 3)).sum()
-    TN_AV = ((predict_av == 2) & (target_av == 2)).sum()
-    FN_AV = ((predict_av == 2) & (target_av == 3)).sum()
-    FP_AV = ((predict_av == 3) & (target_av == 2)).sum()
+    TP_AV = ((predict_av == contain_classes[1]) & (target_av == contain_classes[1])).sum()
+    TN_AV = ((predict_av == contain_classes[0]) & (target_av == contain_classes[0])).sum()
+    FN_AV = ((predict_av == contain_classes[0]) & (target_av == contain_classes[1])).sum()
+    FP_AV = ((predict_av == contain_classes[1]) & (target_av == contain_classes[0])).sum()
     sensitivity_av = TP_AV / (TP_AV + FN_AV)
     specificity_av = TN_AV / (TN_AV + FP_AV)
     balanced_accuracy_av = (sensitivity_av + specificity_av) / 2
     # accuracy_av = (TP_AV + TN_AV) / (TP_AV + TN_AV + FN_AV + FP_AV)
+
+    # F1A,F1V
+    accuracy = []
+    dice = []
+    v_all = (predict_av == contain_classes[0]).sum() + (target_av == contain_classes[0]).sum()
+    a_all = (predict_av == contain_classes[1]).sum() + (target_av == contain_classes[1]).sum()
+    FA = TP_AV * 2 / a_all
+    FV = TN_AV * 2 / v_all
+    dice.append(FA)
+    dice.append(FV)
 
     #SE, SP, ACC
     pro = torch.clone(predict_v)
@@ -65,9 +61,9 @@ def metrics_test_drive_all(predict_av, target_av, predict_v, target_v, mask, con
     accuracy_v = (TP + TN) / (TP + TN + FP + FN)
     # balanced_accuracy_v = (sensitivity_av + specificity_av) / 2
 
+    #AUC
     pro = pro[mask == 1].numpy()
     auc = roc_auc_score(y_true=target_v, y_score=pro)
-
 
     return accuracy, dice, sensitivity_av, specificity_av, balanced_accuracy_av, \
            sensitivity_v, specificity_v, accuracy_v, auc, F1

@@ -1,0 +1,27 @@
+{
+  "dataset_name" : "TR_AV",
+
+  "result_dir" : "results",
+  "experment_name" : "vc_net",
+  "fun_main" : "main",
+
+  "channels" : 3,
+  "num_class" : 3,
+  "batchsize" : 2,
+  "patch_size" : 512,
+  "patch_stride" : 512,
+
+  "lr" : 0.0001,
+  "max_epoch" : 4000,
+  "frequency_show" : 10,
+  "gpu" : 3,
+
+  "if_train" : "False",
+  "finetune" : "True",
+  "pkl_path" : "./results/TR_AV/vc_net/net_params_best.pkl",
+
+  "train_data_path" : ["./data/TONGREN_AV/training/images/"],
+  "test_data_path" : ["./data/TONGREN_AV/test/images/"],
+  "data_size" : 15,
+  "v_a" : [1, 2]
+}

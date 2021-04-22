@@ -69,7 +69,7 @@ def postprocess(probResult,probImage):
     return result.astype(np.uint8),prob
 
 
-def get_test_patches(img, patch_size=512, stride=256, rl=False):
+def get_test_patches(img, patch_size=512, stride=256, rl=False, s_print=True):
     """
     将待分割图预处理后，分割成patch
     :param img: 待分割图
@@ -80,15 +80,15 @@ def get_test_patches(img, patch_size=512, stride=256, rl=False):
     # test_img_adjust=img_process(test_img,rl=rl)  #预处理
     # img = img.transpose(1, 3)
 
-    test_imgs=paint_border(img, patch_size, stride)  #将图片补足到可被完美分割状态
+    # test_imgs=paint_border(img, patch_size, stride, s_print)  #将图片补足到可被完美分割状态
 
-    test_img_patch=extract_patches(test_imgs, patch_size, stride)  #依顺序分割patch
+    test_img_patch=extract_patches(img, patch_size, stride)  #依顺序分割patch
 
     # test_img_patch = test_img_patch.transpose(1, 3)
 
-    return test_img_patch,img.shape[2],test_imgs.shape[2]#,test_img_adjust
+    return test_img_patch,(img.shape[2],img.shape[3]),#(img.shape[2],img.shape[3])#,test_img_adjust
 
-def paint_border(imgs,patch_size, stride):
+def paint_border(imgs,patch_size, stride, s_print):
     """
     将图片补足到可被完美分割状态
     :param imgs:  预处理后的图片
@@ -111,7 +111,8 @@ def paint_border(imgs,patch_size, stride):
                                 full_imgs.shape[2],img_w+(stride - leftover_w)))
         tmp_imgs[0:imgs.shape[0],0:full_imgs.shape[1],0:imgs.shape[2],0:img_w] =imgs
         full_imgs = tmp_imgs
-    print("new full images shape: \n" +str(full_imgs.shape))
+    if s_print:
+        print("new full images shape: \n" +str(full_imgs.shape))
     return full_imgs
 
 def extract_patches(full_imgs, patch_size, stride):
@@ -188,7 +189,7 @@ def img_process(data,rl=False):
 
 
 
-def recompone_overlap(preds,patch_size, stride,img_h,img_w):
+def recompone_overlap(preds,patch_size, stride,img_h,img_w, s_print=True):
     """
     将patch拼成原始图片
     :param preds: patch块
@@ -206,12 +207,14 @@ def recompone_overlap(preds,patch_size, stride,img_h,img_w):
     N_patches_h = (img_h-patch_h)//stride+1
     N_patches_w = (img_w-patch_w)//stride+1
     N_patches_img = N_patches_h * N_patches_w
-    print("N_patches_h: " +str(N_patches_h))
-    print("N_patches_w: " +str(N_patches_w))
-    print("N_patches_img: " +str(N_patches_img))
+    if s_print:
+        print("N_patches_h: " +str(N_patches_h))
+        print("N_patches_w: " +str(N_patches_w))
+        print("N_patches_img: " +str(N_patches_img))
     #assert (preds.shape[0]%N_patches_img==0)
     N_full_imgs = preds.shape[0]//N_patches_img
-    print("According to the dimension inserted, there are " +str(N_full_imgs) +" full images (of " +str(img_h)+"x" +str(img_w) +" each)")
+    if s_print:
+        print("According to the dimension inserted, there are " +str(N_full_imgs) +" full images (of " +str(img_h)+"x" +str(img_w) +" each)")
     full_prob = torch.zeros((N_full_imgs,preds.shape[1],img_h,img_w))  #itialize to zero mega array with sum of Probabilities
     full_sum = torch.zeros((N_full_imgs,preds.shape[1],img_h,img_w))
 
@@ -226,7 +229,8 @@ def recompone_overlap(preds,patch_size, stride,img_h,img_w):
     assert(k==preds.shape[0])
     assert(torch.min(full_sum)>=1)  #at least one
     final_avg = full_prob/full_sum
-    print('using avg')
+    if s_print:
+        print('using avg')
     return final_avg
 
 
@@ -288,4 +292,33 @@ def decomposition_av(label_av):
     label[label_av[:, :, 0] == 255] = 3
     label[label_av[:, :, 2] == 255] = 2
     label[label_av[:, :, 1] == 255] = 1
+    label_n = np.zeros_like(label_av[..., 0])
+    label_n[label_av[:, :, 0]  == label_av[:, :, 1]] = -999
+    label[label_n == -999] = 0
+
     return label
+
+def decomposition_av3(label_av):
+    # label_av: given PIL Image
+    label_av = np.copy(np.asarray(label_av))
+    label = np.zeros_like(label_av[...,0])
+    label[label_av[:, :, 0] == 255] = 1
+    label[label_av[:, :, 2] == 255] = 2
+    return label
+
+def restruction_av(data):
+    mat1 = np.zeros(data.shape)
+    mat2 = np.zeros(data.shape)
+    mat3 = np.zeros(data.shape)
+    # a = ll==1
+    mat1[data == 3] = 255
+    mat3[data == 2] = 255
+    mat2[data == 1] = 255
+    mat1[data == 4] = 255
+    mat3[data == 4] = 255
+    mat2[data == 4] = 255
+
+    mat = np.stack([mat1, mat2, mat3], -1)
+
+
+    return mat/255
