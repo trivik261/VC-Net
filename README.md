@@ -39,11 +39,11 @@ with the ITK-SNAP toolkit (Yushkevich et al., 2006).
 
 # Citation
 
-If the code is helpful for your research, or you wang to use Tongren and Kailuan dataset, please consider citing:
+If the code is helpful for your research, please consider citing:
 
 >doi: 10.3389/fcell.2021.659941
 
 # Questions
 
-Please contact ‘hwang0609@163.com‘
+If you wang to use Tongren and Kailuan dataset,please contact ‘hwang0609@163.com‘
 
