@@ -46,5 +46,5 @@ If the code is helpful for your research, please consider citing:
 
 # Questions
 
-If you wang to use Tongren and Kailuan dataset,please contact ‘hujingfei24@163.com‘
+If you want to use Tongren and Kailuan dataset,please contact ‘hujingfei24@163.com‘
 
