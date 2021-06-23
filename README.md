@@ -10,7 +10,7 @@
 
 Public: Drive, LES, HRF
 
-#### Release: Tongren, Kailuan
+#### Private: Tongren, Kailuan
 
 |Dataset |Number        | Resulotion  | 
 |----  |----        |----  | 
@@ -46,5 +46,5 @@ If the code is helpful for your research, please consider citing:
 
 # Questions
 
-If you want to use Tongren and Kailuan dataset,please contact ‘hujingfei24@163.com‘
+If you have any questions,please contact ‘hujingfei24@163.com‘
 
