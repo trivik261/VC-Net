@@ -17,8 +17,8 @@
   "gpu" : 3,
 
 
-  "if_train" : "False",
-  "finetune" : "True",
+  "if_train" : "True",
+  "finetune" : "False",
   "pkl_path" : "./results/DRIVE_AV/vc_net/net_params_best.pkl",
 
   "train_data_path" : ["./data/DRIVE_AV/training/images/"],
